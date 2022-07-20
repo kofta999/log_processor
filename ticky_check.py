@@ -7,8 +7,7 @@ errors = {}
 user_infos = {"Username": ["INFO", "ERROR"]}
 
 def error_collector(logfile):
-    ##Collects all the errors from logfile and stores them in errors dictionary##
-    
+    '''Collects all the errors from logfile and stores them in errors dictionary'''
     with open (logfile, 'r') as file:
         for line in file.readlines():
             error_result = re.search(r"ticky: ERROR ([\w ']*)", line)
