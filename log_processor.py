@@ -6,6 +6,7 @@ import csv
 import sys
 errors = {}
 user_infos = {"Username": ["INFO", "ERROR"]}
+type_name = ["ERROR", "INFO", "DEBUG", "WARNING"]
 
 def error_collector(logfile, error_name):
     with open (logfile, 'r') as file:
@@ -17,7 +18,6 @@ def error_collector(logfile, error_name):
                     errors[error_result] = 0
                 errors[error_result] += 1
     file.close()
-    print("Error collecting is done.")
     return  sorted(errors.items(), key=operator.itemgetter(1),reverse=True)
 
 def user_collector(logfile):
@@ -36,7 +36,6 @@ def user_collector(logfile):
                 if error_type == "ERROR":
                     user_infos[user][1] +=1
     file.close()
-    print("User statistics are done.")
     return sorted(user_infos.items())
 
 def to_csv(error, per_user):
@@ -45,14 +44,12 @@ def to_csv(error, per_user):
         for row in error:
             writer.writerow(row)
     file.close()
-    print("Errors CSV file is saved in the same folder as the script file.")
 
     with open("user_statistics.csv", 'w+') as file:
         writer = csv.writer(file)
         for row in per_user:
             writer.writerow([row[0]] + [row[1][0]] + [row[1][1]])
     file.close()
-    print("Users CSV file is saved in the same folder as the script file.")
 
 if __name__ == "__main__":
     log_generator()
@@ -60,8 +57,13 @@ if __name__ == "__main__":
         inputfile = sys.argv[1]
     except IndexError:
         inputfile = "syslog"
-    process_name = input("Which kind of error do you want to search for? ")
+    process_name = input("Which kind of error do you want to search for?\nAvaliable errors to search : ERROR, WARNING, DEBUG, INFO ")
+    if process_name.isalpha() == False or process_name.upper() not in type_name:
+        print("Error, Enter a proper error name")
+        sys.exit(1)
     error = error_collector(inputfile, process_name)
-    error.insert(0, (process_name, "Count"))
+    error.insert(0, (process_name.capitalize(), "Count"))
     per_user = user_collector(inputfile)
     to_csv(error, per_user)
+    print("Done.")
+    sys.exit(0)
