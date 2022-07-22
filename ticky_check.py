@@ -7,10 +7,10 @@ import sys
 errors = {}
 user_infos = {"Username": ["INFO", "ERROR"]}
 
-def error_collector(logfile, process_name):
+def error_collector(logfile, error_name):
     with open (logfile, 'r') as file:
         for line in file.readlines():
-            error_result = re.search(r"{}: ERROR ([\w ']*)".format(process_name), line)
+            error_result = re.search(r"[\w\-]*: {} ([\w ']*)".format(error_name.upper()), line)
             if error_result != None:
                 error_result = error_result.group(1).strip()
                 if error_result not in errors :
@@ -23,7 +23,7 @@ def error_collector(logfile, process_name):
 def user_collector(logfile):
     with open(logfile, 'r') as file:
         for line in file.readlines():
-            user_result = re.search(r"ticky: (\w*) .* \((\w.*)\)", line)
+            user_result = re.search(r"[\w\-]*: (\w*) .* \((\w.*)\)", line)
             if user_result != None:
                 user = user_result.group(2)
                 error_type = user_result.group(1)
@@ -55,8 +55,12 @@ def to_csv(error, per_user):
     print("Users CSV file is saved in the same folder as the script file.")
 
 if __name__ == "__main__":
-    process_name = input("Which error do you want to search for? ")
-    error = error_collector(sys.argv[1], process)
-    error.insert(0, ("Error", "Count"))
-    per_user = user_collector(sys.argv[1])
+    try: 
+        inputfile = sys.argv[1]
+    except IndexError:
+        inputfile = "syslog"
+    process_name = input("Which kind of error do you want to search for? ")
+    error = error_collector(inputfile, process_name)
+    error.insert(0, (process_name, "Count"))
+    per_user = user_collector(inputfile)
     to_csv(error, per_user)

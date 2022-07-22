@@ -1,1 +1,6 @@
+syslog
+users.txt
+tasks.txt
+apps.txt
+error_message.csv
 user_statistics.csv
