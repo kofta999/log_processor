@@ -7,10 +7,10 @@ import sys
 errors = {}
 user_infos = {"Username": ["INFO", "ERROR"]}
 
-def error_collector(logfile, process):
+def error_collector(logfile, process_name):
     with open (logfile, 'r') as file:
         for line in file.readlines():
-            error_result = re.search(r"{}: ERROR ([\w ']*)".format(process), line)
+            error_result = re.search(r"{}: ERROR ([\w ']*)".format(process_name), line)
             if error_result != None:
                 error_result = error_result.group(1).strip()
                 if error_result not in errors :
@@ -52,7 +52,7 @@ def to_csv(error, per_user):
 
 
 if __name__ == "__main__":
-    process = input("Which error do you want to search for? ")
+    process_name = input("Which error do you want to search for? ")
     error = error_collector(sys.argv[1], process)
     error.insert(0, ("Error", "Count"))
     per_user = user_collector(sys.argv[1])
