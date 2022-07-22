@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from concurrent.futures import process
+from log_gen import log_generator
 import operator
 import re
 import csv
@@ -55,6 +55,7 @@ def to_csv(error, per_user):
     print("Users CSV file is saved in the same folder as the script file.")
 
 if __name__ == "__main__":
+    log_generator()
     try: 
         inputfile = sys.argv[1]
     except IndexError:
