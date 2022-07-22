@@ -17,6 +17,7 @@ def error_collector(logfile, process_name):
                     errors[error_result] = 0
                 errors[error_result] += 1
     file.close()
+    print("Error collecting is done.")
     return  sorted(errors.items(), key=operator.itemgetter(1),reverse=True)
 
 def user_collector(logfile):
@@ -35,6 +36,7 @@ def user_collector(logfile):
                 if error_type == "ERROR":
                     user_infos[user][1] +=1
     file.close()
+    print("User statistics are done.")
     return sorted(user_infos.items())
 
 def to_csv(error, per_user):
@@ -43,13 +45,14 @@ def to_csv(error, per_user):
         for row in error:
             writer.writerow(row)
     file.close()
+    print("Errors CSV file is saved in the same folder as the script file")
 
     with open("user_statistics.csv", 'w+') as file:
         writer = csv.writer(file)
         for row in per_user:
             writer.writerow([row[0]] + [row[1][0]] + [row[1][1]])
     file.close()
-
+    print("Users CSV file is saved in the same folder as the script file")
 
 if __name__ == "__main__":
     process_name = input("Which error do you want to search for? ")
